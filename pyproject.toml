@@ -1,0 +1,29 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "llama-bench-helper"
+version = "0.1.0"
+description = "A CLI helper for llama.cpp workflows: download GGUF models from Hugging Face, run llama-bench across models, and run shared-prompt quality checks via llama-server."
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+authors = [{ name = "iiiorz" }]
+keywords = ["llama.cpp", "llm", "benchmark", "gguf"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+]
+
+[project.scripts]
+lbh = "lbh.cli:main"
+
+[tool.setuptools]
+package-dir = { "" = "src" }
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+lbh = ["data/*.json"]
