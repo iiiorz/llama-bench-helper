@@ -1,8 +1,6 @@
 # llama-bench-helper (lbh)
 
-llama.cpp 向けのベンチマーク補助 CLI です。「モデルの入手 → 速度計測 → 品質確認」を、決まった手順と記録形式で回せるようにまとめました。
-
-もとは「VRAM 16 GB でローカル LLM 5 モデルを実測する」ブログ記事シリーズのために作った PowerShell スクリプト群で、それを誰でも使える形に一般化したものです。
+llama.cpp 向けのベンチマーク補助 CLI です。モデルの入手、速度計測、品質確認を、予め設定した内容で回し、結果を出力します。
 
 ## できること
 
@@ -15,7 +13,7 @@ llama.cpp 向けのベンチマーク補助 CLI です。「モデルの入手 �
    - 複数モデルを連続で llama-bench 実行。pp/tg のトークン数、繰り返し回数、`-ngl`、コンテキストなどを指定可能
    - モデル別の追加引数（例: `-ncmoe`）は models.toml で自動適用
    - 実行前に VRAM の見積もりが GPU 総量を超えそうな場合は警告
-   - 実行中は VRAM を 1 秒間隔で記録し、結果は `samples_ts` の中央値で集計（結果は日時フォルダに保存され、上書きされません）
+   - 実行中は VRAM を 1 秒間隔で記録し、結果は `samples_ts` の中央値で集計（結果は日時フォルダに保存）
 3. **品質測定**（`lbh quality`）
    - 共通プロンプト集（同梱の既定セットは「です・ます要約」「コード生成」「論理パズル」「制約つき長文」「既定温度サンプル」「画像読み取り」）を全モデルに同じ条件で実行
    - プロンプトは JSON で差し替え・編集可能。文字数や指定語の出現回数などの**機械チェック**を定義しておくと自動で合否が付きます
@@ -28,7 +26,7 @@ llama.cpp 向けのベンチマーク補助 CLI です。「モデルの入手 �
 - llama.cpp のビルド済みバイナリ（`llama-bench` / `llama-server`）
 - Hugging Face CLI（`hf`、ダウンロード機能を使う場合）
 - NVIDIA GPU + `nvidia-smi`（VRAM 記録を使う場合。無くても計測自体は動きます）
-- Windows / Linux / macOS で動く作りにしています（検証の本線は Windows）
+- Windows / Linux / macOS
 
 ## 導入
 
@@ -56,12 +54,12 @@ lbh models
 lbh bench --models Qwen3-14B-Q4_K_M,gpt-oss-20b-MXFP4
 
 # 品質測定（--image は画像テスト用。VL モデルだけに使われます）
-lbh quality --models Qwen3-14B-Q4_K_M --image test.png
+lbh quality --models Qwen3-14B-Q4_K_M --image samples/vl-test-image.png
 
-# AI 評価用バンドルの作り直し（匿名化つき）
+# AI 評価用バンドルの作り直し（匿名化つき。品質測定の最終フォルダに作成）
 lbh export --anonymize
 
-# 最新の実行結果から Markdown レポートを生成
+# 最新の実行結果から Markdown レポートを生成（品質測定の最終フォルダに作成）
 lbh report
 ```
 
@@ -91,7 +89,7 @@ lbh report
 }
 ```
 
-- `kind` は `text`（温度を指定）／`default`（温度を送らない）／`image`（画像つき、mmproj があるモデルだけ実行）
+- `kind` は `text`（LLM温度を指定）／`default`（LLM温度を送らない）／`image`（画像つき、mmproj があるモデルだけ実行）
 - 機械チェックの種類: `max_chars`、`min_chars`、`sentence_max`（「。」の数）、`count_equals` / `count_max`（指定語の出現回数）、`contains`、`not_contains`、`bullets_exactly`（`section` で見出し範囲を指定可）、`regex_count`
 - `max_tokens` は思考型モデルでも「思考＋回答」が収まる余裕を持たせてください。小さすぎる値にはツール側でも警告が出ます（既定の下限は 1024、config で変更可）
 
