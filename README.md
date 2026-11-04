@@ -1,5 +1,7 @@
 # llama-bench-helper (lbh)
 
+[English](README.en.md) | 日本語
+
 llama.cpp 向けのベンチマーク補助 CLI です。モデルの入手、速度計測、品質確認を、予め設定した内容で回し、結果を出力します。
 
 ## できること
