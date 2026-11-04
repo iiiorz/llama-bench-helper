@@ -112,6 +112,12 @@ python -m unittest discover -s tests
 python tests/stub_e2e.py   # end-to-end check with stub llama-bench / llama-server binaries
 ```
 
+## Notes
+
+- This tool comes with no warranty; use it at your own risk.
+- The pre-run VRAM estimate is approximate — a warning may appear even when an actual run would fit.
+- Mechanical quality checks only cover countable conditions. Verify the correctness of responses with an AI or by eye.
+
 ## License
 
 MIT
