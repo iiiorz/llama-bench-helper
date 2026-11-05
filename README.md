@@ -2,6 +2,8 @@
 
 [English](README.en.md) | 日本語
 
+<a href="https://ko-fi.com/tayura" target="_blank"><img height="36" style="border:0px;height:36px;" src="https://storage.ko-fi.com/cdn/kofi2.png?v=3" border="0" alt="Buy Me a Coffee at ko-fi.com" /></a>
+
 llama.cpp 向けのベンチマーク補助 CLI です。モデルの入手、速度計測、品質確認を、予め設定した内容で回し、結果を出力します。
 
 ## できること
@@ -116,6 +118,10 @@ python tests/stub_e2e.py   # ダミーの llama-bench 等を使った通し確�
 - 動作を保証するものではありません。
 - VRAM使用量の事前見積もりは概算です。実測で収まる場合にも警告が出ることがあります。
 - 品質測定の機械チェックは「数えられる条件」だけを対象にしています。内容の正しさは AIや目視で確認してください。
+
+## 支援
+
+このツールが役に立ったら、[Ko-fi](https://ko-fi.com/tayura) で開発支援をいただけると嬉しいです。
 
 ## ライセンス
 
