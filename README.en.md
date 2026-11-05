@@ -2,6 +2,8 @@
 
 English | [日本語](README.md)
 
+<a href="https://ko-fi.com/tayura" target="_blank"><img height="36" style="border:0px;height:36px;" src="https://storage.ko-fi.com/cdn/kofi2.png?v=3" border="0" alt="Buy Me a Coffee at ko-fi.com" /></a>
+
 A benchmark helper CLI for llama.cpp. It runs the whole workflow — downloading models, measuring speed, and checking output quality — with preset conditions, and records the results in a consistent format.
 
 ## What it does
@@ -117,6 +119,10 @@ python tests/stub_e2e.py   # end-to-end check with stub llama-bench / llama-serv
 - This tool comes with no warranty; use it at your own risk.
 - The pre-run VRAM estimate is approximate — a warning may appear even when an actual run would fit.
 - Mechanical quality checks only cover countable conditions. Verify the correctness of responses with an AI or by eye.
+
+## Support
+
+If lbh helps you, you can support its development on [Ko-fi](https://ko-fi.com/tayura).
 
 ## License
 
