@@ -1,0 +1,97 @@
+{
+  "name": "default (from the 2026-11 local-LLM benchmark series)",
+  "notes": "max_tokens values are sized for thinking models (reasoning + final answer). The original run used smaller caps (512/1024/2048/1024) and truncated several answers; see the article series for the full story.",
+  "prompts": [
+    {
+      "id": "p1",
+      "title": "P1 Japanese summary (accuracy / naturalness)",
+      "kind": "text",
+      "text": "次の文章を、重要な数字を落とさずに、3文以内・200字以内で要約してください。\n\n横浜市は2027年4月、市中央図書館のリニューアルオープンを発表した。改修工事は2025年10月から17か月かけて行われ、総事業費は約48億円。改修の中心は3つある。第1に、蔵書スペースを従来の1.4倍に拡張し、開架冊数を32万冊から45万冊に増やした。第2に、3階に120席の学習室を新設し、うち40席は予約制の個室ブースとした。第3に、1階にカフェと子ども向けの読み聞かせスペースを併設し、開館時間を平日は午前9時から午後9時まで、土日祝日は午前9時30分から午後6時まで延長した。市は、年間の来館者数が改修前の約78万人から110万人に増えると見込んでいる。一方で、駐車場は改修前と同じ85台分しかなく、市は公共交通機関の利用を呼びかけている。",
+      "temperature": 0,
+      "max_tokens": 2048,
+      "checks": [
+        {
+          "type": "max_chars",
+          "value": 200
+        },
+        {
+          "type": "sentence_max",
+          "value": 3
+        }
+      ]
+    },
+    {
+      "id": "p2",
+      "title": "P2 Code generation (does it run)",
+      "kind": "text",
+      "text": "Pythonで、リストを受け取り、重複する要素を取り除いて元の順序のまま返す関数 `unique_items(items)` を書いてください。条件は次のとおりです。\n・型ヒントとdocstringを付けること\n・集合（set）を使ってよいが、順序が保たれること\n・最後に、使用例とその実行結果を示すこと",
+      "temperature": 0,
+      "max_tokens": 2048,
+      "checks": [
+        {
+          "type": "contains",
+          "needle": "def unique_items"
+        }
+      ]
+    },
+    {
+      "id": "p3",
+      "title": "P3 Logic puzzle (correct or not)",
+      "kind": "text",
+      "text": "3つの箱があります。ラベルにはそれぞれ「金貨だけ」「銀貨だけ」「金貨と銀貨」と書かれていますが、すべてのラベルは間違っています。中身は、金貨だけの箱、銀貨だけの箱、金貨と銀貨が混ざった箱が1つずつです。どれか1つの箱から硬貨を1枚だけ取り出して見ることで、すべての箱の中身を確定できます。どの箱から取り出すべきか、そして取り出した硬貨が金貨だった場合、各箱の中身がどう確定するか、順を追って説明してください。",
+      "temperature": 0,
+      "max_tokens": 4096,
+      "checks": []
+    },
+    {
+      "id": "p4",
+      "title": "P4 Long instruction following (constraint compliance)",
+      "kind": "text",
+      "text": "在宅勤務のメリットについて、次の条件をすべて守って書いてください。\n(1) 全体を2つの見出し「## メリット」「## 注意点」で構成すること\n(2) 「## メリット」の下には箇条書きでちょうど3点挙げ、各項目は40字以内にすること\n(3) 「通勤」という言葉を、全体で必ず1回だけ使うこと\n(4) 最後は、注意点をふまえた一文の結論で締めること\n(5) 全体で400字以内にすること",
+      "temperature": 0,
+      "max_tokens": 2048,
+      "checks": [
+        {
+          "type": "max_chars",
+          "value": 400
+        },
+        {
+          "type": "count_equals",
+          "needle": "通勤",
+          "value": 1
+        },
+        {
+          "type": "contains",
+          "needle": "## メリット"
+        },
+        {
+          "type": "contains",
+          "needle": "## 注意点"
+        },
+        {
+          "type": "bullets_exactly",
+          "value": 3,
+          "section": "## メリット"
+        }
+      ]
+    },
+    {
+      "id": "default",
+      "title": "Default-temperature sample (feel)",
+      "kind": "default",
+      "text": "今度の週末、丸一日フリーになりました。家の中でできる、あまりお金のかからない面白い過ごし方を3つ提案してください。それぞれ、所要時間の目安も添えてください。",
+      "temperature": null,
+      "max_tokens": 1024,
+      "checks": []
+    },
+    {
+      "id": "image",
+      "title": "Image understanding (Qwen3-VL only, requires -ImagePath)",
+      "kind": "image",
+      "text": "この画像に写っているものを詳しく説明してください。数えられるものがあれば個数も教えてください。",
+      "temperature": 0,
+      "max_tokens": 1024,
+      "checks": []
+    }
+  ]
+}
