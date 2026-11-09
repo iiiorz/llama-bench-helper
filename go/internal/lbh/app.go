@@ -447,7 +447,7 @@ func errExit(err error) int {
 }
 
 func menu(g globalOpts) int {
-	fmt.Printf("llama-bench-helper (lbh) %s — Go beta\n", Version)
+	fmt.Printf("llama-bench-helper (lbh) %s\n", Version)
 	fmt.Println("  1) Download models from Hugging Face")
 	fmt.Println("  2) Run llama-bench")
 	fmt.Println("  3) Run quality checks")
@@ -469,7 +469,7 @@ func menu(g globalOpts) int {
 	return 0
 }
 
-const usageText = `llama-bench-helper (lbh) ` + Version + ` — Go beta
+const usageText = `llama-bench-helper (lbh) ` + Version + `
 Usage:
   lbh [--config PATH] [--yes] <command> [options]
   lbh                  open the interactive menu
@@ -525,7 +525,7 @@ parsed:
 	case "report":
 		return cmdReport(g, args[1:])
 	case "version", "--version", "-version":
-		fmt.Printf("lbh %s (Go beta)\n", Version)
+		fmt.Printf("lbh %s\n", Version)
 		return 0
 	case "help", "--help", "-h":
 		fmt.Print(usageText)

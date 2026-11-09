@@ -17,8 +17,8 @@ import (
 	"time"
 )
 
-// Version of the Go beta build.
-const Version = "2.0.0-beta.2"
+// Version of lbh (Go edition).
+const Version = "2.0.0"
 
 // normalizePath makes Windows-style paths usable everywhere: both '\'
 // and '/' are treated as separators and rewritten to the OS separator.

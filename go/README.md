@@ -1,6 +1,6 @@
-# lbh Go 版ベータ（v2.0.0-beta.2）
+# lbh Go 版（v2.0.0）
 
-Python 版 lbh を Go で書き直したベータ版です。**単一の実行ファイル（Windows は `lbh.exe`）だけで動き、Python のインストールは不要**になりました。
+Python 版 lbh を Go で書き直した正式版です。**単一の実行ファイル（Windows は `lbh.exe`）だけで動き、Python のインストールは不要**になりました。
 
 ## Python 版との互換性
 
@@ -8,7 +8,7 @@ Python 版 lbh を Go で書き直したベータ版です。**単一の実行�
 - `config.toml` / `models.toml` の形式、プロンプトセット JSON、結果フォルダの形式（`bench-summary.csv` / `quality-summary.csv` / `report.md` / `ai-eval-bundle.md` / `.lbh-manifest.json`）は互換を維持
 - Python 版で作った設定ファイルと結果フォルダをそのまま使えます
 
-- **パス区切りは `/` でも `\` でも OK**（beta.2）：config.toml / models.toml のパス値と `--dest` などのパス引数は、内部で OS の区切りに正規化されます。混在（`C:\tools/llama.cpp`）も可
+- **パス区切りは `/` でも `\` でも OK**：config.toml / models.toml のパス値と `--dest` などのパス引数は、内部で OS の区切りに正規化されます。混在（`C:\tools/llama.cpp`）も可
   - 書き方のおすすめは `'C:\tools\llama.cpp'` のように**シングルクォート**（TOML のリテラル文字列）。ダブルクォートの中では `\` が特殊な意味を持ちます
   - ダブルクォートに生の `\` を書いてしまった場合も、読み込み時に自動修復して読みます（修復時は NOTE を表示）。`\t` がタブに化けるタイプも検出します
 
@@ -21,7 +21,7 @@ Python 版 lbh を Go で書き直したベータ版です。**単一の実行�
   - 限定公開リポジトリには環境変数 `HF_TOKEN` が使えます
 - 起動が速くなりました
 
-## 既知の差分・制限（ベータ）
+## 既知の差分・制限
 
 - `--models` はカンマ区切りの1引数で渡してください（例：`--models StubModel,StubVL`）。Python 版のようなスペース区切りの複数値には未対応です
 - 匿名化エクスポート（`export --anonymize`）の Model A/B への割り当て順は Python 版と一致しません（固定シードのシャッフルですが、乱数アルゴリズムが異なるため）

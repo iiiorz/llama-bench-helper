@@ -1,4 +1,4 @@
-// Command lbh is the Go beta of llama-bench-helper: a single-binary CLI
+// Command lbh is the Go edition of llama-bench-helper: a single-binary CLI
 // for llama.cpp model download, benchmarking and quality checks.
 package main
 
