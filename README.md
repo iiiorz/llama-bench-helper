@@ -6,13 +6,16 @@
 
 llama.cpp 向けのベンチマーク補助 CLI です。モデルの入手、速度計測、品質確認を、予め設定した内容で回し、結果を出力します。
 
+**v2.0.0 から Go 製の単一実行ファイルになりました。Python のインストールは不要です。** 設定ファイルや結果フォルダの形式は Python 版（v0.1.0）と互換で、そのまま引き継げます。
+
 ## できること
 
 1. **モデルダウンロード**（`lbh download`）
-   - Hugging Face の URL を渡すとファイル一覧とサイズを表示し、選んだファイルを `hf download` で取得
+   - Hugging Face の URL を渡すとファイル一覧とサイズを表示し、選んだファイルをそのままダウンロード（`hf` CLI は不要。lbh 本体が取得します）
+   - 進捗表示つき。中断しても `.part` ファイルから再開できます（同じコマンドを再実行）
    - GGUF が含まれないリポジトリでは「llama.cpp ではそのまま使えません」と警告
    - mmproj（画像入力用ファイル）があれば一緒の取得を提案、取得後はサイズ検証と SHA256 をマニフェストに記録
-   - `hf` CLI が無い場合は検出してインストールを案内
+   - 限定公開リポジトリには環境変数 `HF_TOKEN` が使えます
 2. **ベンチマーク**（`lbh bench`）
    - 複数モデルを連続で llama-bench 実行。pp/tg のトークン数、繰り返し回数、`-ngl`、コンテキストなどを指定可能
    - モデル別の追加引数（例: `-ncmoe`）は models.toml で自動適用
@@ -26,26 +29,35 @@ llama.cpp 向けのベンチマーク補助 CLI です。モデルの入手、�
 
 ## 前提
 
-- Python 3.11 以上
 - llama.cpp のビルド済みバイナリ（`llama-bench` / `llama-server`）
-- Hugging Face CLI（`hf`、ダウンロード機能を使う場合）
 - NVIDIA GPU + `nvidia-smi`（VRAM 記録を使う場合。無くても計測自体は動きます）
 - Windows / Linux / macOS
 
 ## 導入
 
+[Releases](https://github.com/iiiorz/llama-bench-helper/releases) から、自分の環境に合った zip をダウンロードして展開してください。
+
+| 環境 | ファイル |
+|---|---|
+| Windows (x64) | `lbh-2.0.0-windows-amd64.zip` |
+| Windows (ARM64) | `lbh-2.0.0-windows-arm64.zip` |
+| macOS (Apple Silicon) | `lbh-2.0.0-darwin-arm64.zip` |
+| Linux (x64) | `lbh-2.0.0-linux-amd64.zip` |
+
 ```powershell
-git clone https://github.com/iiiorz/llama-bench-helper.git
-cd llama-bench-helper
-pip install .
-lbh init   # config.toml と models.toml の雛形を作成
+# Windows (x64) の例。展開したフォルダで:
+.\lbh.exe init   # config.toml と models.toml の雛形を作成
 ```
+
+※ Windows では、署名なし exe のため SmartScreen の警告が出る場合があります。
 
 `config.toml` の各項目にはコメントで説明が付いています。まず `[paths]` の `llama_bin`（llama.cpp のバイナリがあるフォルダ）と `models_dir` を自分の環境に合わせてください。
 
+ソースからビルドする場合（Go 1.23 以上）と Python 版については、末尾の「開発者向け」を参照してください。
+
 ## 使い方
 
-引数なしで `lbh` と打つと対話メニューが開きます。サブコマンドでも直接実行できます。
+引数なしで `lbh` と打つと対話メニューが開きます。サブコマンドでも直接実行できます（Windows では `lbh.exe`）。
 
 ```powershell
 # モデルのダウンロード（URL を貼る → 一覧から選択）
@@ -73,6 +85,8 @@ lbh report
 - `models.toml` … モデル別の差分だけを書く任意ファイル。mmproj の対応付け、部分オフロード用の引数、既知モデルのプリセット（gpt-oss の `--jinja` は自動で付与）
 
 雛形は `config.example.toml` / `models.example.toml` を参照してください。全項目にコメントで説明が付いています。
+
+パスの区切りは `/` でも `\` でも構いません。Windows のパスは `'C:\tools\llama.cpp'` のようにシングルクォートで書くのが確実です（TOML のダブルクォート内では `\` が特殊な意味を持ちます。生の `\` を書いてしまった場合も、読み込み時に自動修復します）。
 
 ## プロンプトセットの形式
 
@@ -107,11 +121,21 @@ lbh report
 - `<日時>-quality/ai-eval-bundle.md` … 他の AI に採点を頼むための一式
 - `run-metadata.json` … 実行条件の記録（再現性のため）
 
-## テスト
+## 開発者向け
+
+Go 版のソースは `go/` にあります（ビルド方法や Python 版との差分は [go/README.md](go/README.md) を参照）。
 
 ```powershell
+cd go
+go test ./...                # 単体テスト
+python stub_e2e.py ./lbh     # ダミーの llama-bench 等を使った通し確認
+```
+
+Python 版（v0.1.0 系）のソースも `src/` に残っています。使う場合は Python 3.11 以上で:
+
+```powershell
+pip install .
 python -m unittest discover -s tests
-python tests/stub_e2e.py   # ダミーの llama-bench 等を使った通し確認
 ```
 
 ## 注意
