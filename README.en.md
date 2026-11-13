@@ -6,13 +6,16 @@ English | [日本語](README.md)
 
 A benchmark helper CLI for llama.cpp. It runs the whole workflow — downloading models, measuring speed, and checking output quality — with preset conditions, and records the results in a consistent format.
 
+**Since v2.0.0, lbh is a single executable written in Go — no Python installation required.** Config files and result folders stay compatible with the Python version (v0.1.0), so existing setups carry over as-is.
+
 ## What it does
 
 1. **Model download** (`lbh download`)
-   - Paste a Hugging Face URL to see the file list with sizes, then download the selected files with `hf download`
+   - Paste a Hugging Face URL to see the file list with sizes, then download the selected files directly (no `hf` CLI needed — lbh fetches them itself)
+   - Shows progress, and an interrupted download resumes from the `.part` file (just run the same command again)
    - Warns when a repository contains no GGUF files ("not usable with llama.cpp as-is")
    - If the repository has an mmproj (vision) file, offers to download it together; after downloading, file sizes are verified and SHA256 hashes are recorded in a manifest
-   - If the `hf` CLI is missing, detects it and offers to install it
+   - For gated repositories, set the `HF_TOKEN` environment variable
 2. **Benchmark** (`lbh bench`)
    - Runs llama-bench across multiple models in sequence. Prompt/generation token counts, repetitions, `-ngl`, context size and more are configurable
    - Per-model extra arguments (e.g. `-ncmoe`) are applied automatically from models.toml
@@ -26,26 +29,35 @@ A benchmark helper CLI for llama.cpp. It runs the whole workflow — downloading
 
 ## Requirements
 
-- Python 3.11 or later
 - A llama.cpp build (`llama-bench` / `llama-server`)
-- Hugging Face CLI (`hf`, for the download feature)
 - NVIDIA GPU + `nvidia-smi` (for VRAM recording; benchmarks still run without it)
 - Windows / Linux / macOS
 
 ## Installation
 
+Download the zip for your platform from [Releases](https://github.com/iiiorz/llama-bench-helper/releases) and extract it.
+
+| Platform | File |
+|---|---|
+| Windows (x64) | `lbh-2.0.0-windows-amd64.zip` |
+| Windows (ARM64) | `lbh-2.0.0-windows-arm64.zip` |
+| macOS (Apple Silicon) | `lbh-2.0.0-darwin-arm64.zip` |
+| Linux (x64) | `lbh-2.0.0-linux-amd64.zip` |
+
 ```powershell
-git clone https://github.com/iiiorz/llama-bench-helper.git
-cd llama-bench-helper
-pip install .
-lbh init   # creates config.toml and models.toml templates
+# Example: Windows (x64), in the extracted folder:
+.\lbh.exe init   # creates config.toml and models.toml templates
 ```
+
+Note: the executable is unsigned, so Windows SmartScreen may show a warning on first run.
 
 Every item in `config.toml` is documented with comments. Start by setting `llama_bin` (the folder containing the llama.cpp binaries) and `models_dir` under `[paths]` to match your environment.
 
+For building from source (Go 1.23+) or the Python version, see "For developers" at the bottom.
+
 ## Usage
 
-Running `lbh` with no arguments opens an interactive menu. Subcommands work directly too.
+Running `lbh` with no arguments opens an interactive menu. Subcommands work directly too (use `lbh.exe` on Windows).
 
 ```powershell
 # Download models (paste a URL, then pick from the list)
@@ -73,6 +85,8 @@ lbh report
 - `models.toml` — optional per-model differences only: mmproj pairing, partial-offload arguments, and built-in presets for known models (e.g. `--jinja` is added automatically for gpt-oss)
 
 See `config.example.toml` / `models.example.toml` for templates; every item is explained in comments (currently in Japanese — the keys and values are language-neutral).
+
+Both `/` and `\` work as path separators. For Windows paths, single quotes are the safe choice — `'C:\tools\llama.cpp'` (inside TOML double quotes, `\` has special meaning; if you do write a raw `\` there, lbh repairs it automatically on load).
 
 ## Prompt set format
 
@@ -107,11 +121,21 @@ Each run creates a folder under `results_dir`.
 - `<timestamp>-quality/ai-eval-bundle.md` — everything needed to ask another AI to grade the responses
 - `run-metadata.json` — the exact run conditions, for reproducibility
 
-## Tests
+## For developers
+
+The Go source lives in `go/` (see [go/README.md](go/README.md) for build instructions and the differences from the Python version).
 
 ```powershell
+cd go
+go test ./...                # unit tests
+python stub_e2e.py ./lbh     # end-to-end check with stub llama-bench / llama-server binaries
+```
+
+The Python version (v0.1.0 series) source also remains in `src/`. To use it, with Python 3.11 or later:
+
+```powershell
+pip install .
 python -m unittest discover -s tests
-python tests/stub_e2e.py   # end-to-end check with stub llama-bench / llama-server binaries
 ```
 
 ## Notes
